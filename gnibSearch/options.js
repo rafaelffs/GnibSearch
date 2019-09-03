@@ -2,6 +2,7 @@
 
 let saveButton = document.getElementById('save');
 let boolGnib = document.getElementById('boolGnib');
+let openInis = document.getElementById('openInis');
 
 boolGnib.addEventListener('change', function() {
 	let hasGnib = document.getElementById('hasGnib');
@@ -10,8 +11,15 @@ boolGnib.addEventListener('change', function() {
 	}
 	else {
 		hasGnib.style.display = "none";
+		document.getElementById('gnibNumber').value = "";
+		document.getElementById('gnibExDate').value = "";
 	}
 });
+
+openInis.onclick = function(element) {
+	chrome.tabs.update({url: "https://burghquayregistrationoffice.inis.gov.ie/Website/AMSREG/AMSRegWeb.nsf/AppSelect?OpenForm"});
+};
+
 saveButton.addEventListener('click', function() {
 	let objUser = {};
 	objUser.boolGnib = document.getElementById('boolGnib').value;

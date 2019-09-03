@@ -1,7 +1,12 @@
 (function() {
 
 chrome.storage.sync.get('user', function(data) {
-let user = data.user;  
+	let user;
+	if(data.user == undefined){
+		alert("Open options menu and fill your information first.");
+	}
+	else {
+user = data.user;  
 /////////////////////////////////////////////////////////////////
 $('#dvDeclareCheck').removeClass('hideThis');
 $('#dvDeclareCheck').attr('style', '');
@@ -33,9 +38,12 @@ btn.src = 'https://www.soundjay.com/free-music/midnight-ride-01a.mp3';
 var achou = false;
 var existeHorario = false;
 var tempos = [];
+}
  
 var myFunc01 = function() {
-var i = 0;
+	var errors = userHasOptions();
+if(errors == ""){
+	var i = 0;
   while (i < 100000 && existeHorario == false) {
  (function(i) {
    
@@ -61,6 +69,18 @@ $("#dvAppOptions").hide();
    data : dataThis,
    async : true,
    success : function(data) {
+	   if(document.getElementById('idTries') == undefined){
+			var para = document.createElement("h2");
+			para.setAttribute("id", "idTries");
+			var node = document.createTextNode("Try number:" + (i + 1) + " out of 100000");
+			para.appendChild(node);
+			var element = document.getElementById("dvInputHead");
+			element.appendChild(para);
+	   }
+	   else{
+		   document.getElementById('idTries').innerText = "Try number:" + (i + 1) + " out of 100000";
+	   }
+
     if (!(data.error === undefined || data.error === null)) {
      $("#valErrDateSearch").html("<span class=\"appOpMsg\">" + data.error + "</span>");
      $("#valErrDateSearch").show();
@@ -71,14 +91,14 @@ $("#dvAppOptions").hide();
     $("#dvAppOptions").show();
     $("#valErrDateSearch").hide();
     if (!(data.empty === undefined || data.empty === null)) {
-    console.log('nada');
+    console.log('nothing');
      $("#dvAppOptions")
      .html(
      "<table class=\"table\"><tr><td></td><td>No appointment(s) are currently available</td></tr></table>");
      $('#btSrch4Apps').prop('disabled', false);
     } else {
      if (data.slots[0] == "empty") {
-     console.log('nada');
+     console.log('nothing');
       $("#dvAppOptions")
       .html(
       "<table class=\"table\"><tr><td></td><td>No appointment(s) are currently available</td></tr></table>");
@@ -102,7 +122,7 @@ $("#dvAppOptions").hide();
       }
      if(existeHorario){
       
-      //btn.play();
+      btn.play();
       tempos.forEach(clearTimeout); 
      }
       $('#btSrch4Apps').prop('disabled', false);
@@ -116,10 +136,11 @@ $("#dvAppOptions").hide();
    tempos.push(tempo);}
  )(i++)
   }
+}
+else {
+	alert(errors);
+}
 };
-
-myFunc01();
-
 function isValidForm() {
 	var fldLst = ["Category","SubCategory","GivenName",
 	"SurName","DOB","Nationality","Email","EmailConfirm",
@@ -228,9 +249,7 @@ function validateEmail(email) {
 	
 	  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	  return re.test(email);
-}
-	
-
+}	
 function catChange() {
 	var tmp = $('#Category').val();
 	if (tmp != "Select..." && tmp != "..." && (tmp.length > 0)) {
@@ -266,8 +285,33 @@ function resetSubCatFld() {
 		$('#SubCategory').val("");
 	}
 }
+function userHasOptions(){
+	var invalidText = "Please add:";
+	if(user == undefined){
+		console.log("Fill your information first");
+		return "";
+	}
+	else if(user.boolGnib == "Renewal" && user.gnibNumber == "")
+		return invalidText + " GNIB number";
+	else if(user.boolGnib == "Renewal" && user.gnibExDate == "")
+		return invalidText + "Please add: GNIB expiry date";
+	else if(user.givenName == "")
+		return invalidText + "Given Name";
+	else if(user.surName == "")
+		return invalidText + "Surname";
+	else if(user.birth == "")
+		return invalidText + "Birth Date";	
+	else if(user.email == "")
+		return invalidText + "E-mail";
+	else if(user.passport == "")
+		return invalidText + "Passport number";
+	else if(user.nationality == "")
+		return invalidText + "Nationality";	
+	else
+		return "";
+}
 	//////////////////////////////////////////////////////////////////	
-
+myFunc01();
 });
 
 })();
