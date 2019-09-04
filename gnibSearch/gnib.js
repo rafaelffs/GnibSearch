@@ -1,9 +1,10 @@
 (function() {
 
 chrome.storage.sync.get('user', function(data) {
+	
 	let user;
 	if(data.user == undefined){
-		alert("Open options menu and fill your information first.");
+		chrome.tabs.create({url: "options.html"});
 	}
 	else {
 user = data.user;  
@@ -13,6 +14,8 @@ $('#dvDeclareCheck').attr('style', '');
 $('#Category').val('All').trigger('change');
 catChange();
 resetSubCatFld();
+$('#dvPPNo').show();
+$('#dvPPRes').hide();
 ($('#SubCategory')).val('All').trigger('change');
 if(user.boolGnib == "Yes")
 	user.boolGnib = "Renewal"
@@ -71,11 +74,15 @@ $("#dvAppOptions").hide();
    success : function(data) {
 	   if(document.getElementById('idTries') == undefined){
 			var para = document.createElement("h2");
+			var info = document.createElement("p");
+			var nodeText = document.createTextNode("Refresh the page if you want to stop the counter");
+			info.appendChild(nodeText);
 			para.setAttribute("id", "idTries");
 			var node = document.createTextNode("Try number:" + (i + 1) + " out of 100000");
 			para.appendChild(node);
 			var element = document.getElementById("dvInputHead");
 			element.appendChild(para);
+			element.appendChild(info);
 	   }
 	   else{
 		   document.getElementById('idTries').innerText = "Try number:" + (i + 1) + " out of 100000";
@@ -97,6 +104,13 @@ $("#dvAppOptions").hide();
      "<table class=\"table\"><tr><td></td><td>No appointment(s) are currently available</td></tr></table>");
      $('#btSrch4Apps').prop('disabled', false);
     } else {
+		//test slot
+		//var slotsMock = [];
+		//var objSlot = {id:"AA123456789", time: "4 September 2019 - 16:00"};
+		//slotsMock.push(objSlot);
+		//data.slots = slotsMock;
+		//end test
+		
      if (data.slots[0] == "empty") {
      console.log('nothing');
       $("#dvAppOptions")
@@ -107,9 +121,13 @@ $("#dvAppOptions").hide();
       
       var sTmp = '';
       for (i = 0; i < data.slots.length; i++) {
-       //if(parseInt((data.slots[i].time).split(" ")[0]) >= 6 && parseInt((data.slots[i].time).split(" ")[0]) <= 16 && (data.slots[i].time).split(" ")[1] == "August")
-        existeHorario = true;
-       sTmp += '<div id="rw'
+		if(checkExtrasFilter(data.slots[i], data.slots.length)){
+			existeHorario = true;
+		}
+		else{
+			console.log('not yet');
+		}
+		sTmp += '<div id="rw'
         + data.slots[i].id
         + '" class="appOption"><table class="table"><tr><td id="td'
         + data.slots[i].id
@@ -121,7 +139,8 @@ $("#dvAppOptions").hide();
         $('#btSrch4Apps').prop('disabled', false);
       }
      if(existeHorario){
-      
+      document.getElementById('idTries').innerText = "<<<<<<<<<<APPOINTMENT FOUND>>>>>>>>>>>>";
+	  document.getElementById('idTries').style.color = "green";
       btn.play();
       tempos.forEach(clearTimeout); 
      }
@@ -285,6 +304,63 @@ function resetSubCatFld() {
 		$('#SubCategory').val("");
 	}
 }
+
+var months = [
+    'January', 'February', 'March', 'April', 'May',
+    'June', 'July', 'August', 'September',
+    'October', 'November', 'December'];
+
+function monthNumToName(monthnum) {
+    return months[monthnum - 1] || '';
+}
+function monthNameToNum(monthname) {
+    var month = months.indexOf(monthname);
+    return month ? month + 1 : 0;
+}
+
+function checkExtrasFilter(slot, slotsLength){
+	if(user.blockedAppointments >= slotsLength)
+		return false;
+	if(user.minDate != "" && user.maxDate != "")
+	{
+		var slotDay = parseInt((slot.time).split(" ")[0]);
+		var slotMonth = (slot.time).split(" ")[1];
+		var slotYear = (slot.time).split(" ")[2];
+		var slotDate = new Date(slotYear+ "-" +monthNameToNum(slotMonth)+ "-" +slotDay);
+		
+		var startDate = new Date(user.minDate + "T00:00:00");
+		var endDate = new Date(user.maxDate+ "T00:00:00");
+		
+		if(slotDate >= startDate && slotDate <= endDate)
+			return true;
+		return false;
+	}
+	else if(user.minDate != ""){
+		var startDate = new Date(user.minDate+ "T00:00:00");
+		var slotDay = parseInt((slot.time).split(" ")[0]);
+		var slotMonth = (slot.time).split(" ")[1];
+		var slotYear = (slot.time).split(" ")[2];
+		var slotDate = new Date(slotYear+ "-" +monthNameToNum(slotMonth)+ "-" +slotDay);
+		
+		if(slotDate >= startDate)
+			return true;
+		return false;
+	}
+	else if(user.maxDate != ""){
+		var endDate = new Date(user.maxDate+ "T00:00:00");
+		var slotDay = parseInt((slot.time).split(" ")[0]);
+		var slotMonth = (slot.time).split(" ")[1];
+		var slotYear = (slot.time).split(" ")[2];
+		var slotDate = new Date(slotYear+ "-" +monthNameToNum(slotMonth)+ "-" +slotDay);
+		
+		if(slotDate <= endDate)
+			return true;
+		return false;
+	}
+	
+	return true;
+}
+
 function userHasOptions(){
 	var invalidText = "Please add:";
 	if(user == undefined){
@@ -310,6 +386,7 @@ function userHasOptions(){
 	else
 		return "";
 }
+
 	//////////////////////////////////////////////////////////////////	
 myFunc01();
 });

@@ -1,32 +1,59 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style>
-      button {
-        height: 80px;
-        width: 80px;
-        outline: none;
-        margin: 10px;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="bootstrap.min.css">
   </head>
   <body>
-	<p>
-	Do you have a GNIB card? <select id="boolGnib" class="form-control" placeholder="Select...">
+  <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+  <p class="h4 mb-4">Fill in the form:</p>
+<form id='form'>
+ <div class="form-group">
+    <label for="exampleFormControlSelect1">Do you have a GNIB card?</label>
+    <select class="form-control" id="boolGnib">
 		<option>Yes</option>
 		<option>No</option>
-		</select>
-	</p>
-	<div id="hasGnib">
-		<p>GNIB Number: <input type="text" id="gnibNumber" /></p>
-		<p>GNIB Expiration Date: <input type="text" id="gnibExDate" /></p>
-	</div>
-	<p>Given Name: <input type="text" id="givenName" /></p>
-	<p>Surname: <input type="text" id="surName" /></p>
-	<p>Birth Date: <input type="text" id="birth" /></p>
-	<p>E-mail: <input type="text" id="email" /></p>
-	<p>Passport: <input type="text" id="passport" /></p>
-	<p>Nationality: <select id="nationality" class="form-control" placeholder="Select...">
+    </select>
+  </div>
+<div id="hasGnib" class="form-group">
+  <div class="form-group">
+    <label for="gnibNumber">GNIB Number</label>
+    <input type="number" class="form-control" id="gnibNumber">
+  </div>
+  <div class="form-group">
+    <label for="gnibExDate">GNIB Expiration Date</label>
+    <input type="date" class="form-control" id="gnibExDate">
+  </div>
+</div>
+
+<div class="form-group">
+    <label for="givenName">Given Name:</label>
+    <input type="text" required class="form-control" id="givenName">
+</div>
+
+<div class="form-group">
+    <label for="surName">Surname:</label>
+    <input type="text" required class="form-control" id="surName">
+</div>
+
+<div class="form-group">
+    <label for="birth">Birth Date:</label>
+    <input type="date" required class="form-control" id="birth">
+</div>
+
+<div class="form-group">
+    <label for="email">E-mail:</label>
+    <input type="email" required class="form-control" id="email">
+</div>
+
+<div class="form-group">
+    <label for="passport">Passport:</label>
+    <input type="text" required class="form-control" id="passport">
+</div>
+  
+<div class="form-group">
+<label for="nationality">Nationality:</label>
+<select class="form-control" id="nationality" placeholder="Select...">
 <option>Select...
 </option><option>Afghanistan, Islamic Republic of
 </option><option>Albania, Republic of
@@ -204,10 +231,41 @@
 </option><option>Vietnam, Socialist Republic of
 </option><option>Yemen, Republic of
 </option><option>Zambia, Republic of
-</option><option>Zimbabwe, Republic of</option></select></p>
-	<br>
-	<input type="button" id="save" value="Save" />
-	<input type="button" id="openInis" value="Appointment website"/>
+</option><option>Zimbabwe, Republic of</option>
+</select>
+</div>
+<br>
+<div class="form-group">
+<input type="button" id="toggleExtras" class="btn btn-light" value="Additional options" />
+<div>
+<div id="extras" style="display: none">
+<br>
+<div class="form-group">
+    <label for="blockedAppointments">Blocked appointments:</label>
+    <input type="number" value="0" min="0" required class="form-control" id="blockedAppointments">
+    <small id="blockedAppointmentsHelp" class="form-text text-muted">Sometimes INIS system has some appointments blocked. In that case, add the number of blocked appointments, so the application will ignore those.</small>
+</div>
+<div class="form-group">
+  <label for="minDate">Starting appointment date</label>
+  <input type="date" class="form-control" id="minDate">
+  <small id="minDateHelp" class="form-text text-muted">Search only for appointments after this date.</small>
+</div>
+  <div class="form-group">
+  <label for="maxDate">Ending appointment date</label>
+  <input type="date" class="form-control" id="maxDate">
+  <small id="maxDateHelp" class="form-text text-muted">Search only for appointments until this date.</small>
+</div>
+</div>
+<br><br><br>
+<hr>
+<div class="form-group">
+<button type="submit" id="save" class="btn btn-primary">Save</button>
+<input type="button" id="openInis" class="btn btn-primary" value="Appointment website" />
+</div>
+</form>
+</main>
   </body>
   <script src="options.js"></script>
+  <script src="jquery-3.4.1.min.js"></script>
+  <script src="bootstrap.min.js"></script>
 </html>

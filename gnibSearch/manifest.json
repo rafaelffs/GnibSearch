@@ -1,8 +1,8 @@
 {
- "name": "GNIB/IRP appointment search",
+ "name": "GNIB/IRP appointment scanner",
   "version": "1.0",
-  "description": "Extension to help you to find GNIB/IRP appointments",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "description": "Tired of refreshing INIS page every second to book an appointment? With this extension you can just setup your information and let the app do the hard work. Once an appoinment is found, a sound will play to alert so you can book your appointment.",
+  "permissions": ["activeTab", "declarativeContent", "storage", "notifications"],
   "options_page": "options.html",
   "background": {
     "scripts": ["background.js", "gnib.js", "jquery-3.4.1.min.js"],
